@@ -1,0 +1,18 @@
+version: '2'
+services:
+  # LibreNMS
+  librenms:
+    build: ./build/librenms
+    volumes:
+      - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/librenms/config:/config
+    environment:
+      HOSTNAME: librenms
+    extra_hosts:
+      - "librenms:127.0.0.1"
+    ports:
+      - "80:80"
+    networks:
+      - main
+
+networks:
+  main:
