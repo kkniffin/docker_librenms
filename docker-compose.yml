@@ -10,6 +10,7 @@ services:
     extra_hosts:
       - "librenms:127.0.0.1"
     ports:
+      - "443:443"
       - "80:80"
     links:
       - "mariadb:db"
