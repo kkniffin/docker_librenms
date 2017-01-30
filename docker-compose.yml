@@ -4,13 +4,28 @@ services:
   librenms:
     build: ./build/librenms
     volumes:
-      - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/librenms/config:/config
+      - ${COMPOSE_DOCKER_CONFIG}/${COMPOSE_PROJECT_NAME}/librenms/config:/opt/librenms
     environment:
       HOSTNAME: librenms
     extra_hosts:
       - "librenms:127.0.0.1"
     ports:
       - "80:80"
+    links:
+      - "mariadb:db"
+    networks:
+      - main
+
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/mariadb/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: librenms
+      MYSQL_USER: librenms
+      MYSQL_PASSWORD: l1br3nm5!
     networks:
       - main
 

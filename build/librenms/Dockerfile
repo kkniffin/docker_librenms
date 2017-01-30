@@ -2,6 +2,7 @@ FROM phusion/baseimage:latest
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV MYCNF_PHP_DATE___TIMEZONE "Etc/UTC"
+ENV MYCNF_SNMP_COMMUNITY "public"
 
 RUN apt-get -qq update \
     && apt-get -y upgrade -o Dpkg::Options::="--force-confold" \
@@ -12,7 +13,8 @@ RUN apt-get -qq update \
     tzdata \
     wget \
     apt-transport-https \
-    net-tools
+    net-tools \
+    nano
 
 # Components for LibreNMS
 RUN apt-get install -y php7.0-cli \
@@ -39,6 +41,8 @@ RUN apt-get install -y php7.0-cli \
     rrdtool \
     git
 
+#VOLUME ["/opt/librenms"]
+
 # Create LibreNMS User
 RUN useradd librenms -d /opt/librenms -M -r \
     && usermod -a -G librenms www-data
@@ -55,12 +59,12 @@ RUN cd /opt/librenms \
 # Copy NGINX Configuration for LibreNMS
 COPY ./configs/nginx/librenms.conf /etc/nginx/conf.d/librenms.conf
 RUN rm /etc/nginx/sites-enabled/default
+RUN phpenmod mcrypt
 
 # Copy Configuration Files
 RUN cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf \
     && cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms \
     && cp /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
-# Edit the text which says RANDOMSTRINGGOESHERE and set your own community string.
 
 # Copy SNMP Config
 RUN curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro \
@@ -69,11 +73,12 @@ RUN curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-
 # Change Final Permissions
 RUN chown -R librenms:librenms /opt/librenms
 
+# Copy Service Files
 RUN mkdir -p /etc/my_init.d
 COPY ./my_init.d/ /etc/my_init.d/
 COPY ./service/ /etc/service/
 
-EXPOSE 9350
+#EXPOSE 9350
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
