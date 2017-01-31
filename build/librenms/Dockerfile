@@ -4,6 +4,12 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV MYCNF_PHP_DATE___TIMEZONE "Etc/UTC"
 ENV MYCNF_SNMP_COMMUNITY "public"
 ENV LIBRENMS_AUTOUPDATE "true"
+ENV LIBRENMS_CONFIG_PHP_DBHOST "db"
+ENV LIBRENMS_CONFIG_PHP_DBUSER "librenms"
+ENV LIBRENMS_CONFIG_PHP_DBPASS "l1br3nm5!"
+ENV LIBRENMS_CONFIG_PHP_BASEURL "test.home.local"
+ENV LIBRENMS_CONFIG_PHP_DB "librenms"
+ENV LIBRENMS_CONFIG_PHP_DBPORT "3306"
 ENV NGINX_SERVERNAME "test.home.local"
 
 RUN apt-get -qq update \
@@ -28,6 +34,13 @@ RUN apt-get install -y php7.0-cli \
     php-pear \
     php7.0-curl \
     php7.0-fpm \
+    php7.0-opcache \
+    php7.0-ldap \
+    php-memcached \
+    php-imagick \
+    php-pear \
+    php-net-ipv4 \
+    php-net-ipv6 \
     snmp \
     graphviz \
     php7.0-mcrypt \
@@ -40,9 +53,10 @@ RUN apt-get install -y php7.0-cli \
     nmap \
     python-mysqldb \
     snmpd \
+    rrdcached \
+    rrdtool \
     php-net-ipv4 \
     php-net-ipv6 \
-    rrdtool \
     git
 
 # Create LibreNMS User
@@ -55,8 +69,7 @@ RUN cd /opt \
 
 # Make Directories & Change Permissions
 RUN cd /opt/librenms \
-    && mkdir rrd logs \
-    && chmod 775 rrd
+    && mkdir rrd logs
 
 # Copy NGINX Configuration for LibreNMS
 COPY ./files/etc/nginx/conf.d/* /etc/nginx/conf.d/
@@ -87,6 +100,7 @@ RUN chown -R librenms:librenms /opt/librenms
 RUN mkdir -p /etc/my_init.d
 COPY ./files/etc/my_init.d/ /etc/my_init.d/
 COPY ./files/etc/service/ /etc/service/
+COPY ./files/opt/librenms/ /opt/librenms/
 
 # Create Config Directory
 RUN mkdir -p /configs

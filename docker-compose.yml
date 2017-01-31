@@ -5,11 +5,18 @@ services:
     build: ./build/librenms
     volumes:
       - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/librenms/rrd:/opt/librenms/rrd
-      - ${COMPOSE_DOCKER_CONFIG}/${COMPOSE_PROJECT_NAME}/configs:/configs
+      - ${COMPOSE_DOCKER_CONFIG}/${COMPOSE_PROJECT_NAME}/librenms/configs:/configs/librenms
     environment:
       HOSTNAME: librenms
-    extra_hosts:
-      - "librenms:127.0.0.1"
+      LIBRENMS_AUTOUPDATE: "true"
+      LIBRENMS_CONFIG_PHP_DBHOST: "db"
+      LIBRENMS_CONFIG_PHP_DBUSER: "librenms"
+      LIBRENMS_CONFIG_PHP_DBPASS: "l1br3nm5!"
+      LIBRENMS_CONFIG_PHP_BASEURL: "https://${COMPOSE_DOCKER_SERVER_IP}"
+      LIBRENMS_CONFIG_PHP_DB: "librenms"
+      LIBRENMS_CONFIG_PHP_DBPORT: "3306"
+#    extra_hosts:
+#      - "librenms:127.0.0.1"
     ports:
       - "443:443"
       - "80:80"
@@ -18,9 +25,8 @@ services:
     networks:
       - main
 
-
+  # MariaDB
   mariadb:
-#    image: mariadb:latest
     build: ./build/mariadb
     volumes:
       - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/mariadb/data:/var/lib/mysql
