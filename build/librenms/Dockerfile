@@ -3,7 +3,8 @@ FROM phusion/baseimage:latest
 ENV DEBIAN_FRONTEND noninteractive
 ENV MYCNF_PHP_DATE___TIMEZONE "Etc/UTC"
 ENV MYCNF_SNMP_COMMUNITY "public"
-ENV LIBRENMS_AUTOUPDATE "no"
+ENV LIBRENMS_AUTOUPDATE "true"
+ENV NGINX_SERVERNAME "test.home.local"
 
 RUN apt-get -qq update \
     && apt-get -y upgrade -o Dpkg::Options::="--force-confold" \
@@ -52,14 +53,14 @@ RUN useradd librenms -d /opt/librenms -M -r \
 RUN cd /opt \
     && git clone https://github.com/librenms/librenms.git librenms
 
-# Change Permissions
+# Make Directories & Change Permissions
 RUN cd /opt/librenms \
     && mkdir rrd logs \
     && chmod 775 rrd
 
 # Copy NGINX Configuration for LibreNMS
-COPY ./configs/nginx/conf.d/* /etc/nginx/conf.d/
-COPY ./configs/nginx/snippets/* /etc/nginx/snippets/
+COPY ./files/etc/nginx/conf.d/* /etc/nginx/conf.d/
+COPY ./files/etc/nginx/snippets/* /etc/nginx/snippets/
 RUN rm /etc/nginx/sites-enabled/default
 RUN phpenmod mcrypt
 
@@ -84,13 +85,19 @@ RUN chown -R librenms:librenms /opt/librenms
 
 # Copy Service Files
 RUN mkdir -p /etc/my_init.d
-COPY ./my_init.d/ /etc/my_init.d/
-COPY ./service/ /etc/service/
+COPY ./files/etc/my_init.d/ /etc/my_init.d/
+COPY ./files/etc/service/ /etc/service/
+
+# Create Config Directory
+RUN mkdir -p /configs
 
 # Cleanup
 RUN apt-get -yq autoremove --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Volumes
+VOLUME ["/opt/librenms/logs", "/opt/librenms/rrd", "/etc/ssl", "/var/log/nginx"]
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
