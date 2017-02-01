@@ -27,7 +27,7 @@ $config['base_url']        = getenv('LIBRENMS_CONFIG_PHP_BASEURL');
 
 ### Enable this to use rrdcached. Be sure rrd_dir is within the rrdcached dir
 ### and that your web server has permission to talk to rrdcached.
-$config['rrdcached']    = "unix:/var/run/rrdcached/rrdcached.sock";
+#$config['rrdcached']    = "unix:/var/run/rrdcached/rrdcached.sock";
 
 ### Default community
 $config['snmp']['community'] = array("public");

@@ -1,6 +1,7 @@
 FROM phusion/baseimage:latest
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm
 ENV MYCNF_PHP_DATE___TIMEZONE "Etc/UTC"
 ENV MYCNF_SNMP_COMMUNITY "public"
 ENV LIBRENMS_AUTOUPDATE "true"
