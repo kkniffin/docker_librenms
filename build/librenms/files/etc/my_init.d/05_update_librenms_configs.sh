@@ -1,13 +1,10 @@
 #!/bin/bash
 
-BASECONFIG=/configs/librenms/config.php
-CUSTOMCONFIG=/configs/librenms/config.custom.php
-LIBRENMSCONFIG=/opt/librenms/config.php
+# Configuration File that if Exists will append to existing config.php
 
-#if [ -f ${BASECONFIG} ]; then
-#	echo "COPYING BASECONFIG FROM ${BASECONFIG}"
-#	cp ${BASECONFIG} ${LIBRENMSCONFIG}
-#fi
+BASECONFIG=/configs/librenms/config.php
+CUSTOMCONFIG=/configs/librenms/append.config.php
+LIBRENMSCONFIG=/opt/librenms/config.php
 
 # Include Mounted Config File if it exists and append it to existing config file in container
 if [ -f ${CUSTOMCONFIG} ]; then
@@ -15,4 +12,14 @@ if [ -f ${CUSTOMCONFIG} ]; then
 	echo include ${CUSTOMCONFIG} >> ${LIBRENMSCONFIG}
 fi
 
+# Export Environment Variables to File for Importing before running command
 
+ENV_VARIABLEPREFIX=LIBRENMS_CONFIG_PHP_ # What environment variables will be prefixed with to denote use.
+
+# Iterate Through Environment Variables and Output them to File for Importing before running commands
+for ENVVARIABLE in `eval echo '${!'$ENV_VARIABLEPREFIX'*}'`
+do
+	# Get Value for Variable
+        CONFIGVALUE="$(printenv $ENVVARIABLE)"
+ 	echo "export ${ENVVARIABLE}=${CONFIGVALUE}" >> /opt/librenms/environment_librenms
+done
