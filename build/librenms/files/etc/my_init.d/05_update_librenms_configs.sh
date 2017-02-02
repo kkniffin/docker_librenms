@@ -5,6 +5,9 @@
 BASECONFIG=/configs/librenms/config.php
 CUSTOMCONFIG=/configs/librenms/append.config.php
 LIBRENMSCONFIG=/opt/librenms/config.php
+LIBRENMSENV=/opt/librenms/environment_librenms
+
+rm -f ${LIBRENMSENV}
 
 # Include Mounted Config File if it exists and append it to existing config file in container
 if [ -f ${CUSTOMCONFIG} ]; then
@@ -21,5 +24,12 @@ for ENVVARIABLE in `eval echo '${!'$ENV_VARIABLEPREFIX'*}'`
 do
 	# Get Value for Variable
         CONFIGVALUE="$(printenv $ENVVARIABLE)"
- 	echo "export ${ENVVARIABLE}=${CONFIGVALUE}" >> /opt/librenms/environment_librenms
+ 	echo "export ${ENVVARIABLE}=${CONFIGVALUE}" >> ${LIBRENMSENV}
 done
+
+# Update Cron.d for LibreNMS to import Enviroment Variables
+
+LIBRENMSDIR=/opt/librenms
+LIBRENMSCRON=/opt/cron.d/librenms
+
+sed -i "s| ${LIBRENMSDIR}| ${LIBRENMSENV};${LIBRENMSDIR}|" ${LIBRENMSCRON}
