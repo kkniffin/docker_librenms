@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo '##################################################'
+echo '##### Updating LibreNMS Configuration'
+echo '##################################################'
+
+
 # Configuration File that if Exists will append to existing config.php
 
 BASECONFIG=/configs/librenms/config.php
@@ -11,9 +16,11 @@ rm -f ${LIBRENMSENV}
 
 # Include Mounted Config File if it exists and append it to existing config file in container
 if [ -f ${CUSTOMCONFIG} ]; then
-	echo "APPENDING TO BASECONFIG AT ${BASECONFIG}"
+	echo "LIBRENMS: CUSTOM CONFIG FOUND, APPENDING TO CONFIG AT ${BASECONFIG}"
 	echo include ${CUSTOMCONFIG} >> ${LIBRENMSCONFIG}
 fi
+
+echo "LIBRENMS: EXPORTING CONFIG VARIABLES TO ${LIBRENMSENV}"
 
 # Export Environment Variables to File for Importing before running command
 
@@ -29,7 +36,12 @@ done
 
 # Update Cron.d for LibreNMS to import Enviroment Variables
 
-LIBRENMSDIR=/opt/librenms
-LIBRENMSCRON=/opt/cron.d/librenms
 
-sed -i "s| ${LIBRENMSDIR}| ${LIBRENMSENV};${LIBRENMSDIR}|" ${LIBRENMSCRON}
+LIBRENMSDIR=/opt/librenms
+LIBRENMSCRON=/etc/cron.d/librenms
+
+echo "LIBRENMS: UPDATING CRONTAB AT ${LIBRENMSCRON}"
+
+if [[ ! $(egrep "${LIBRENMSENV}" $LIBRENMSCRON) ]]; then
+	sed -i "s| ${LIBRENMSDIR}| . ${LIBRENMSENV};${LIBRENMSDIR}|" ${LIBRENMSCRON}
+fi

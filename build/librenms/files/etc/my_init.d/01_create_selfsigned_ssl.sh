@@ -1,8 +1,8 @@
 #!/bin/bash
 
-##################################################
-##### Create Self Signed SSL Certificate
-##################################################
+echo '##################################################'
+echo '##### Create Self Signed SSL Certificate'
+echo '##################################################'
 
 
 SELFSIGNEDCERT=/etc/ssl/certs/nginx-selfsigned.crt
