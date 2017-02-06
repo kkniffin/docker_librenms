@@ -1,8 +1,8 @@
 #!/bin/bash
 
-############################################################################################
-##### SAMPLE CONFIG FOR UPDATING CONFIGS FROM ENVIRONMENT VARIABLES ########################
-############################################################################################
+echo '############################################################################################'
+echo '##### MODIFYING PHP FILE BASED ON ENV VARIABLES'
+echo '############################################################################################'
 
 CONFIG_FILES=('/etc/php/7.0/fpm/php.ini' '/etc/php/7.0/cli/php.ini') # Configuration File Location of what will be modified.
 CONFIG_VARIABLE_SEPERATOR='.' # If the config file variables have a seperator such as date.timezone
@@ -14,6 +14,8 @@ ENV_VARIABLE_SEPERATOR='___' # Seperator used to denote variables with seperatio
 # Iterate Through Files Listed
 for CONFIG_FILE in "${CONFIG_FILES[@]}"
 do
+
+	echo "MODIFYING $CONFIG_FILE WITH ENV VARIABLES STARTING WITH $ENV_VARIABLEPREFIX"
 
         for ENVVARIABLE in `eval echo '${!'$ENV_VARIABLEPREFIX'*}'`
         do
@@ -31,7 +33,7 @@ do
                 # Check If Config Variable is in configuration file and not commented out.
                 if [[ $(egrep "^${CONFIGVARIABLE}" $CONFIG_FILE) ]]; then
                         # If Found Comment it out so it can be added to the end of the file
-                        echo "Previous Variable in Config $CONFIG_FILE Found, Commenting Out..."
+                        echo "PHPCONFIG: Previous Variable in Config $CONFIG_FILE Found, Commenting Out..."
                         sed -i "s|^${CONFIGVARIABLE}|${COMMENT_PREFIX}${CONFIGVARIABLE}|g" $CONFIG_FILE
                 fi
 
@@ -41,10 +43,3 @@ do
         done
 
 done
-
-echo '####################################################################'
-echo "####### Environment Variables for $ENV_VARIABLEPREFIX ##############"
-echo '####################################################################'
-set | egrep -i ^$ENV_VARIABLEPREFIX
-echo '####################################################################'
-echo '####################################################################'

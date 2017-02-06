@@ -59,7 +59,8 @@ RUN apt-get install -y php7.0-cli \
     rrdtool \
     php-net-ipv4 \
     php-net-ipv6 \
-    git
+    git \
+    memcached
 
 # Create LibreNMS User
 RUN useradd librenms -d /opt/librenms -M -r \
@@ -100,12 +101,12 @@ RUN chown -R librenms:librenms /opt/librenms
 
 # Copy Service Files
 RUN mkdir -p /etc/my_init.d
+RUN mkdir -p /configs/librenms/
 COPY ./files/etc/my_init.d/ /etc/my_init.d/
 COPY ./files/etc/service/ /etc/service/
-COPY ./files/opt/librenms/ /opt/librenms/
 
-# Create Config Directory
-RUN mkdir -p /configs
+# Copy Default Configs
+COPY ./files/opt/librenms/config.php /configs_default/
 
 # Cleanup
 RUN apt-get -yq autoremove --purge \
@@ -113,7 +114,7 @@ RUN apt-get -yq autoremove --purge \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Volumes
-VOLUME ["/opt/librenms/logs", "/opt/librenms/rrd", "/etc/ssl", "/var/log/nginx"]
+VOLUME ["/opt/librenms/logs", "/opt/librenms/rrd", "/etc/ssl", "/var/log/nginx", "/configs"]
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]

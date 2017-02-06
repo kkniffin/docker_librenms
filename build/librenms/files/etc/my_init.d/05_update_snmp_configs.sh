@@ -1,3 +1,11 @@
 #!/bin/bash
 
-sed -i "s|RANDOMSTRINGGOESHERE|${MYCNF_SNMP_COMMUNITY}|" /etc/snmp/snmpd.conf
+echo '##################################################'
+echo '##### Updating SNMP Configuration'
+echo '##################################################'
+
+SNMPDCONFFILE=/etc/snmp/snmpd.conf
+SNMPDCOMMUNITY=${MYCNF_SNMP_COMMUNITY}
+
+echo "SNMPD: Changing Community to ${SNMPDCOMMUNITY}"
+sed -i "s|RANDOMSTRINGGOESHERE|${SNMPDCOMMUNITY}|" ${SNMPDCONFFILE}

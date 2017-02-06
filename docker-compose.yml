@@ -5,7 +5,7 @@ services:
     build: ./build/librenms
     volumes:
       - ${COMPOSE_DOCKER_DATA}/${COMPOSE_PROJECT_NAME}/librenms/rrd:/opt/librenms/rrd
-      - ${COMPOSE_DOCKER_CONFIG}/${COMPOSE_PROJECT_NAME}/librenms/configs:/configs/librenms
+      - ${COMPOSE_DOCKER_CONFIG}/${COMPOSE_PROJECT_NAME}/librenms/configs:/configs
     environment:
       HOSTNAME: librenms
       LIBRENMS_AUTOUPDATE: "true"

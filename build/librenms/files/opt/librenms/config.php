@@ -27,10 +27,10 @@ $config['base_url']        = getenv('LIBRENMS_CONFIG_PHP_BASEURL');
 
 ### Enable this to use rrdcached. Be sure rrd_dir is within the rrdcached dir
 ### and that your web server has permission to talk to rrdcached.
-#$config['rrdcached']    = "unix:/var/run/rrdcached/rrdcached.sock";
+$config['rrdcached']    = "unix:/var/run/rrdcached/rrdcached.sock";
 
 ### Default community
-$config['snmp']['community'] = array("public");
+$config['snmp']['community'][] = "public";
 
 ### Authentication Model
 $config['auth_mechanism'] = "mysql"; # default, other options: ldap, http-auth
@@ -43,3 +43,10 @@ $config['auth_mechanism'] = "mysql"; # default, other options: ldap, http-auth
 
 # Uncomment the next line to disable daily updates
 #$config['update'] = 0;
+
+# Check for Duplicat IP's and Don't Add
+$config['addhost_alwayscheckip']   = false;
+
+# Add Devices even if there isn't a reverse DNS entry
+$config['discovery_by_ip'] = true;
+
