@@ -52,3 +52,7 @@ $config['discovery_by_ip'] = true;
 
 # Allow Duplicate SysName
 $config['allow_duplicate_sysName'] = true;
+
+# Use Nagios Plugins for Additional Monitoring
+$config['show_services'] = 1;
+$config['nagios_plugins'] = "/usr/lib/nagios/plugins";

@@ -54,3 +54,10 @@ echo "LIBRENMS: UPDATING CRONTAB AT ${LIBRENMSCRON}"
 if [[ ! $(egrep "${LIBRENMSENV}" $LIBRENMSCRON) ]]; then
 	sed -i "s| ${LIBRENMSDIR}| . ${LIBRENMSENV};${LIBRENMSDIR}|" ${LIBRENMSCRON}
 fi
+
+# Add Nagios Plugins Check
+if [[ ! $(egrep 'check-services.php' $LIBRENMSCRON) ]]; then
+        echo '*/5 * * * * librenms /opt/librenms/check-services.php >> /dev/null 2>&1' >> ${LIBRENMSCRON}
+fi
+
+

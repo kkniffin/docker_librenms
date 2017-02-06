@@ -26,7 +26,9 @@ RUN apt-get -qq update \
     wget \
     apt-transport-https \
     net-tools \
-    nano
+    nano \
+    build-essential
+
 
 # Components for LibreNMS
 RUN apt-get install -y php7.0-cli \
