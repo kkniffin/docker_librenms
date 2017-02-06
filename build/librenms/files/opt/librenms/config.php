@@ -44,9 +44,11 @@ $config['auth_mechanism'] = "mysql"; # default, other options: ldap, http-auth
 # Uncomment the next line to disable daily updates
 #$config['update'] = 0;
 
-# Check for Duplicat IP's and Don't Add
+# Check for Duplicate IP's and Don't Add if duplicate
 $config['addhost_alwayscheckip']   = false;
 
 # Add Devices even if there isn't a reverse DNS entry
 $config['discovery_by_ip'] = true;
 
+# Allow Duplicate SysName
+$config['allow_duplicate_sysName'] = true;
