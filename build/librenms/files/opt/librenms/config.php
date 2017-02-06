@@ -56,3 +56,9 @@ $config['allow_duplicate_sysName'] = true;
 # Use Nagios Plugins for Additional Monitoring
 $config['show_services'] = 1;
 $config['nagios_plugins'] = "/usr/lib/nagios/plugins";
+
+# Disabled Modules
+$config['poller_modules']['junose-atm-vp'] = 0;
+$config['poller_modules']['netscaler-vsvr'] = 0;
+$config['poller_modules']['aruba-controller'] = 0;
+$config['poller_modules']['cisco-asa-firewall'] = 0;
